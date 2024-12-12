@@ -586,7 +586,8 @@ void init_audio_pipeline()
 
     ESP_LOGI(TAG, "[5.0] Set up event listener");
     audio_event_iface_cfg_t evt_cfg = AUDIO_EVENT_IFACE_DEFAULT_CFG();
-    audio_event_iface_handle_t evt = audio_event_iface_init(&evt_cfg);
+    //audio_event_iface_handle_t evt = audio_event_iface_init(&evt_cfg);
+    evt = audio_event_iface_init(&evt_cfg);
 
     // Setup pipeline for continuous music playback
     pipeline[0] = audio_pipeline_init(&pipeline_cfg);
