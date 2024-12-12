@@ -259,11 +259,21 @@ void uart_task(void *arg)
         if (ret == ESP_OK && msg.source_type == AUDIO_ELEMENT_TYPE_ELEMENT && msg.source == (void *)wav_decoder[0] && msg.cmd == AEL_MSG_CMD_REPORT_STATUS && msg.data == (void *)AEL_STATUS_STATE_FINISHED)
         {
             // Instead of restarting the pipeline, retrigger the URI for looping
+
+            /*
             ESP_LOGI(TAG, "Music finished, retriggering URI for looping...");
             audio_element_reset_state(wav_decoder[0]);  // Reset the decoder state
             audio_element_reset_input_ringbuf(fats_rd_el[0]);  // Reset the ringbuffer
             audio_element_set_uri(fats_rd_el[0], audio_element_get_uri(fats_rd_el[0]));  // Retrigger the same URI
             audio_pipeline_run(pipeline[0]);  // Continue the pipeline
+            */
+
+            audio_pipeline_stop(pipeline[0]);
+            audio_pipeline_wait_for_stop(pipeline[0]);
+            audio_pipeline_reset_ringbuffer(pipeline[0]);
+            audio_pipeline_reset_elements(pipeline[0]);
+            audio_pipeline_run(pipeline[0]);  // Restart the pipeline
+
         }
     }
 }
