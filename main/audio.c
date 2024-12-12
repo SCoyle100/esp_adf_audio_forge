@@ -268,6 +268,8 @@ void uart_task(void *arg)
             audio_pipeline_run(pipeline[0]);  // Continue the pipeline
             */
 
+
+            ESP_LOGI(TAG, "Music finished, restarting...");
             audio_pipeline_stop(pipeline[0]);
             audio_pipeline_wait_for_stop(pipeline[0]);
             audio_pipeline_reset_ringbuffer(pipeline[0]);
