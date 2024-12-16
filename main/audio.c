@@ -799,7 +799,7 @@ static const char *TAG = "AUDIO_FORGE_PIPELINE";
 #define DEST_SAMPLERATE 44100
 #define DEST_CHANNEL 1
 #define TRANSMITTIME 0
-#define MUSIC_GAIN_DB 1
+#define MUSIC_GAIN_DB 10
 #define NUMBER_SOURCE_FILE 2
 
 audio_pipeline_handle_t pipeline[NUMBER_SOURCE_FILE] = {NULL};
@@ -1006,6 +1006,29 @@ void uart_task(void *arg)
 
                 // Restart the effect pipeline with the new file
                 audio_pipeline_run(pipeline[1]);
+
+            // If the switch character is detected, play the switch effect file
+            if (strchr((char *)data, SWITCH_CHAR) && current_effect_index != -1)
+                {
+                ESP_LOGI(TAG, "Switch character detected, playing effect: /sdcard/switch_effect/switch_effect%d.wav", current_effect_index);
+
+                // Stop the current effect pipeline
+                audio_pipeline_stop(pipeline[1]);
+                audio_pipeline_wait_for_stop(pipeline[1]);
+                audio_pipeline_reset_ringbuffer(pipeline[1]);
+                audio_pipeline_reset_elements(pipeline[1]);
+
+                // Set the URI for the switch effect file based on the current_effect_index
+                char switch_effect_uri[50];
+                snprintf(switch_effect_uri, sizeof(switch_effect_uri), "/sdcard/switch_effect/switch_effect%d.wav", current_effect_index);
+                audio_element_set_uri(fats_rd_el[1], switch_effect_uri);
+
+                // Restart the effect pipeline with the new file
+                audio_pipeline_run(pipeline[1]);
+
+                
+                }
+
             }
         }
 
